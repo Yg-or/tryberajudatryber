@@ -43,7 +43,7 @@ function confereDados(req, res) {
 app.get('/curso', (req, res) => {
     if (!confereDados(req)) {
         return res.json({'erro': 'algo de errado ocorreu'})
-    }
+    } 
     return res.json(dadosCadastro(req));
 });
 
