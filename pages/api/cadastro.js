@@ -37,7 +37,9 @@ async function cadastro(reqMail, reqName, reqTel, reqTurma) {
     }
 
   );
-  await rawResponse.json();
+  const result = await rawResponse.json();
+
+  console.log(result)
 
 }
 
