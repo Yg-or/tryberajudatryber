@@ -27,12 +27,16 @@ async function cadastro(reqMail, reqName, reqTel, reqTurma) {
       tags: [reqTurma]
     })
   }).then(
-    console.log('Feito')
+    () => {
+      console.log('Feito')
+    }
   )
   .catch(
-    console.log('Erro')
+    () => {
+      console.log('erro')
+    }
 
-  );;
+  );
   await rawResponse.json();
 
 }
