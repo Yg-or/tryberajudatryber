@@ -1,9 +1,9 @@
-import setUser from './api/teste.js';
-//require('dotenv').config();
+import swal from 'sweetalert';
+import MaskedInput from 'react-text-mask';
+
 const mainContent = {
     height: '500px',
     width: '500px',
-    backgroundColor: 'beige',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,6 +57,7 @@ const selectTurma = {
     width: '80px',
     borderRadius: '5px',
     padding: '7px',
+    border: '1px solid rgb(17, 18, 175)',
 }
 
 const emailTelArea = {
@@ -98,35 +99,11 @@ const btnCadastrar = {
     borderRadius: '10px',
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function Home() {
     return (
         <div style={bodyStyle}>
             <div style={mainContent}>
-                <div style={form}>
+                <div style={form} id="formArea">
                     <div style={nameClassArea}>
                         <input style={inputNome} type="text" placeholder="Nome" id="nome" required />
                         <select style={selectTurma} name="turma" id="turma">
@@ -149,21 +126,51 @@ function Home() {
                     </div>
                     <div style={emailTelArea}>
                         <input style={input} type="email" id="email" placeholder="E-mail" required />
-                        <input style={input} type="text" id="telefone" placeholder="Telefone" required />
+                        <MaskedInput
+                            mask={['(', /[1-9]/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                            id='telefone'
+                            style={input}
+                            placeholder="Telefone"
+                        />
                     </div>
                     <div style={btnArea}>
-                        <button style={btnCadastrar} id="btnCadastrar" onClick={() => { cadastrar() }} >Cadastrar</button>
+                        <button style={btnCadastrar} id="btnCadastrar" onClick={() => { enviarDados() }} >Cadastrar</button>
                     </div>
                 </div>
-
             </div>
         </div>
     )
 }
 
+function showConfirmation() {
+    swal("Cadastro realizado com sucesso", "confirme na sua caixa de entrada!", "success");
+    document.getElementById('nome').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('telefone').value = '';
+    document.getElementById('turma').value = '';
+}
 
-function cadastrar() {
-    enviarDados();
+function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+
+function verifyData(nome, email, telefone, turma) {
+    if (!nome || !email || !turma || !telefone) {
+        swal("Algo de errado ocorreu!", "Preencha corretamente todos os campos!", "error");
+        return false;
+    }
+
+    if (!validateEmail(email)) {
+        swal("Algo de errado ocorreu!", "Preencha corretamente o seu e-mail!", "error");
+        return false;
+    }
+    return true;
+}
+
+function showErrorMessage() {
+    swal("Algo de errado ocorreu!", "Tente Novamente", "error");
+
 }
 
 async function enviarDados() {
@@ -171,20 +178,36 @@ async function enviarDados() {
     const email = document.getElementById('email').value;
     const telefone = document.getElementById('telefone').value;
     const turma = document.getElementById('turma').value;
+    const confere = verifyData(nome, email, telefone, turma);
 
-    setUser(nome, email, telefone, turma);
+    if (confere) {
+        await fetch('https://api.convertkit.com/v3/forms/2434471/subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'charset': 'utf-8'
+            },
+            body: JSON.stringify({
+                api_key: 'f7tHWGq--y4ALq6wq5UVmw',
+                email: email,
+                first_name: nome,
+                fields: {
+                    telefone: telefone,
+                    turma: turma
+                }
+            })
+        }).then(
+            () => {
+                showConfirmation();
+            }
+        )
+            .catch(
+                () => {
+                    showErrorMessage();
+                }
 
-
-
-    
-
-
+            );
+    }
 }
-
-
-
-
-
-
 
 export default Home;
