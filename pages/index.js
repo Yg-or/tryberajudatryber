@@ -1,9 +1,12 @@
 import swal from 'sweetalert';
 import MaskedInput from 'react-text-mask';
+import Head from 'next/head';
+import logo from "../img/logo.png";
+import Image from 'next/image'
 
 const mainContent = {
-    height: '500px',
-    width: '500px',
+    height: '400px',
+    width: '400px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -99,11 +102,29 @@ const btnCadastrar = {
     borderRadius: '10px',
 }
 
+const logoArea = {
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '0px'
+}
+
+const logoStyle = {
+    height: '50px',
+    width: '50px'
+}
+
 function Home() {
     return (
         <div style={bodyStyle}>
+            <Head>
+                <title>Tryber ajuda Tryber</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
             <div style={mainContent}>
                 <div style={form} id="formArea">
+                    <div style = {logoArea}>
+                        <Image src = {logo} style={logoStyle}/>
+                    </div>
                     <div style={nameClassArea}>
                         <input style={inputNome} type="text" placeholder="Nome" id="nome" required />
                         <select style={selectTurma} name="turma" id="turma">
@@ -170,7 +191,6 @@ function verifyData(nome, email, telefone, turma) {
 
 function showErrorMessage() {
     swal("Algo de errado ocorreu!", "Tente Novamente", "error");
-
 }
 
 async function enviarDados() {
